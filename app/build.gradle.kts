@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.drawpath"
+    namespace = "com.example.myapplication"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.drawpath"
+        applicationId = "com.example.myapplication"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
