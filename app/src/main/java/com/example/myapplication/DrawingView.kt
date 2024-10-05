@@ -24,7 +24,7 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
     }
 
     // Tâm và bán kính của hình tròn
-    private val circleCenter = PointF(400f, 400f) // Tâm của hình tròn
+    private val circleCenter = PointF(550f, 500f) // Tâm của hình tròn
     private val circleRadius = 300f // Bán kính của hình tròn
 
     // Trạng thái các cạnh đã vẽ
@@ -76,6 +76,11 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
                 val newX = event.x
                 val newY = event.y
 
+                // Kiểm tra xem điểm mới có nằm trong hình tròn không
+                if (isInsideCircle(newX, newY)) {
+                    return false // Không cho phép vẽ bên trong hình tròn
+                }
+
                 // Snap vị trí tiếp theo vào đường tròn
                 val snappedPoint = snapToCircle(newX, newY)
 
@@ -122,17 +127,26 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         return Math.abs(distance - circleRadius) < 50 // Sử dụng ngưỡng nhỏ để kiểm tra
     }
 
+    // Kiểm tra xem điểm có nằm bên trong hình tròn không
+    private fun isInsideCircle(x: Float, y: Float): Boolean {
+        val dx = x - circleCenter.x
+        val dy = y - circleCenter.y
+        val distance = Math.sqrt((dx * dx + dy * dy).toDouble()).toFloat()
+        return distance < circleRadius // Nếu khoảng cách nhỏ hơn bán kính, tức là bên trong
+    }
+
     // Cập nhật trạng thái đã vẽ của các cạnh
     private fun updateEdgeStatus(x: Float, y: Float) {
         val angle = Math.toDegrees(Math.atan2(((y - circleCenter.y).toDouble()), ((x - circleCenter.x).toDouble()))).toFloat()
 
         // Kiểm tra các góc để xác định các cạnh đã vẽ
         when {
-            angle >= -45 && angle < 45 -> topDrawn = true // Cạnh trên
-            angle >= 45 && angle < 135 -> rightDrawn = true // Cạnh phải
-            angle >= 135 || angle < -135 -> bottomDrawn = true // Cạnh dưới
-            angle >= -135 && angle < -45 -> leftDrawn = true // Cạnh trái
+            angle >= -30 && angle < 30 -> topDrawn = true // Cạnh trên
+            angle >= 30 && angle < 90 -> rightDrawn = true // Cạnh phải
+            angle >= 90 && angle < 150 -> bottomDrawn = true // Cạnh dưới
+            angle >= -150 && angle < -90 -> leftDrawn = true // Cạnh trái
         }
+
     }
 
     // Kiểm tra xem tất cả các cạnh đã được vẽ chưa
@@ -160,4 +174,6 @@ class DrawingView(context: Context, attrs: AttributeSet?) : View(context, attrs)
         leftDrawn = false
         invalidate()
     }
+
+
 }
